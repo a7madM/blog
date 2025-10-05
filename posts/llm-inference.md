@@ -4,7 +4,7 @@ At **[whatisgoing.com](https://whatisgoing.com)**, we needed a reliable way to *
 
 For example:
 
-> “انتصارات أكتوبر” and “حرب أكتوبر”
+> "انتصارات أكتوبر" and "حرب أكتوبر"
 
 …both refer to the same historical event — the 1973 war between Egypt and Israel — yet share no overlapping words.  
 Traditional keyword or similarity-based methods fail to capture such **semantic equivalence**.
@@ -25,28 +25,27 @@ We wanted a solution that could:
 
 ## 🌍 Examples of the Challenge
 
-### 🇸🇦 Arabic Examples
+<summary>🇸🇦 Arabic Examples</summary>
 
 | Example | Explanation |
-|----------|-------------|
-| “انتصارات أكتوبر” vs “حرب أكتوبر” | Both refer to the October War (1973), but use different words. |
-| “عبد الفتاح السيسي” vs “الرئيس السيسي” | One uses the full name; the other uses a title with surname. |
----
+|---------|-------------|
+| `انتصارات أكتوبر` vs `حرب أكتوبر` | Both refer to the October War (1973), but use different words. |
+| `عبد الفتاح السيسي` vs `الرئيس السيسي` | One uses the full name; the other uses a title with surname. |
 
-### 🇬🇧 English Examples
 
-| Example | Explanation |
-|----------|-------------|
-| “President Abdel Fattah el-Sisi” vs “El Sisi” vs “President Sisi” | All refer to the same person, phrased differently. |
-| “United Nations” vs “UN” vs “the UN organization” | Various forms of the same entity. |
----
-
-### 🇩🇪 German Examples
+<summary>🇬🇧 English Examples</summary>
 
 | Example | Explanation |
-|----------|-------------|
-| “Bundeskanzler Olaf Scholz” vs “Scholz” vs “der Kanzler” | Different references (title, surname, or role) to the same person. |
-| “Europäische Union” vs “EU” | Long and short forms of the same organization. |
+|---------|-------------|
+| `President Abdel Fattah el-Sisi` vs `El Sisi` vs `President Sisi` | All refer to the same person, phrased differently. |
+| `United Nations` vs `UN` vs `the UN organization` | Various forms of the same entity. |
+
+<summary>🇩🇪 German Examples</summary>
+
+| Example | Explanation |
+|---------|-------------|
+| `Bundeskanzler Olaf Scholz` vs `Scholz` vs `der Kanzler` | Different references (title, surname, or role) to the same person. |
+| `Europäische Union` vs `EU` | Long and short forms of the same organization. |
 ---
 
 
