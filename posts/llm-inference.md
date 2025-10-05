@@ -46,8 +46,9 @@ We wanted a solution that could:
 |---------|-------------|
 | `Bundeskanzler Olaf Scholz` vs `Scholz` vs `der Kanzler` | Different references (title, surname, or role) to the same person. |
 | `Europäische Union` vs `EU` | Long and short forms of the same organization. |
----
 
+
+---
 
 ## 🏗️ Architecture Overview
 
