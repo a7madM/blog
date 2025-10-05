@@ -1,4 +1,5 @@
-# My Personal Blog
+Ahmed Magdy - Technical Blog
+
 Welcome to my blog! Here you'll find my thoughts, experiences, and insights on various topics.
 
 ## Contents

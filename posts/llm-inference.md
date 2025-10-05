@@ -1,16 +1,13 @@
 # 🧩 Building a Local LLM Inference API for Semantic Similarity
+![LLM Inference Architecture](/images/llm-inference.png)
 
 At **[whatisgoing.com](https://whatisgoing.com)**, we needed a reliable way to **extract named entities** from multilingual news articles — especially Arabic news — where the same entity can appear in different linguistic forms.
 
 For example:
 
-> "انتصارات أكتوبر" and "حرب أكتوبر"
-
-…both refer to the same historical event — the 1973 war between Egypt and Israel — yet share no overlapping words.  
-Traditional keyword or similarity-based methods fail to capture such **semantic equivalence**.
+"The Ukraine War" and "The Russian Invasion" both refer to the same geopolitical event — the ongoing conflict in Eastern Europe — yet share no overlapping words. Traditional keyword or similarity-based methods fail to capture such **semantic equivalence**.
 
 ---
-
 ## 🎯 The Challenge
 
 We wanted a solution that could:
@@ -48,8 +45,6 @@ We wanted a solution that could:
 | `Europäische Union` vs `EU` | Long and short forms of the same organization. |
 
 
----
-
 ## 🏗️ Architecture Overview
 
 Our service follows a clean, layered architecture that separates concerns and ensures maintainability:
@@ -59,9 +54,9 @@ llm-inference/
 ├── main.go                 # Application bootstrap
 ├── config/                 # Configuration management
 ├── models/                 # Data structures and types
-├── services/               # Business logic and LLM calls
-├── handlers/               # HTTP request handlers
-└── routes/                 # Route definitions and middleware
+├── services/              # Business logic and LLM calls
+├── handlers/              # HTTP request handlers
+└── routes/                # Route definitions and middleware
 ```
 
 ### Core Components
