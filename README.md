@@ -24,6 +24,9 @@ Welcome to my blog! Here you'll find my thoughts, experiences, and insights on v
     I'm constantly learning and exploring new technologies to solve complex engineering challenges.
 
 ## Recent Posts
+Here are some of my recent blog posts:
+
+- [Large Language Models Inference Optimization](posts/llm-inference.md) - LLM API inference for semantic similarity, a real world use case in Whatisgoing.com
 
 ## Contact
 Feel free to reach out to me:
