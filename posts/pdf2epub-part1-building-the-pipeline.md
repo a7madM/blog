@@ -9,7 +9,7 @@ image: https://a7madm.github.io/blog/images/pdf2epub-part1-thumbnail.png
 
 *Part 1 of a 3-part series on building `pdf2epub`, a Go CLI that turns scanned, image-only PDFs into Kindle-ready reflowable EPUBs — and everything that went sideways along the way.*
 
-I had a real problem to solve: a scanned copy of *كنت رئيسا لمصر* ("I Was President of Egypt"), Mohamed Naguib's memoir — 420 pages, image-only PDF, no text layer at all. I wanted to read it on a Kindle, reflowable, in Arabic, with proper chapters. Nothing off-the-shelf did that well without uploading a personal scan to some cloud OCR service, which didn't sit right with me.
+I had a real problem to solve: a scanned copy of an old Arabic memoir — 420 pages, image-only PDF, no text layer at all. I wanted to read it on a Kindle, reflowable, in Arabic, with proper chapters. Nothing off-the-shelf did that well without uploading a personal scan to some cloud OCR service, which didn't sit right with me.
 
 So: `pdf2epub`. Go, local tools, homelab mindset — Tesseract instead of a cloud OCR API, everything running on my own machine.
 
@@ -20,7 +20,7 @@ So: `pdf2epub`. Go, local tools, homelab mindset — Tesseract instead of a clou
 A CLI that takes a scanned PDF and produces a Kindle-friendly EPUB:
 
 ```sh
-./pdf2epub -lang ara -title "كنت رئيسا لمصر" -author "محمد نجيب" \
+./pdf2epub -lang ara -title "عنوان الكتاب" -author "اسم المؤلف" \
   -o mybook.epub input.pdf
 ```
 
@@ -57,7 +57,7 @@ The pipeline worked cleanly on small synthetic test PDFs. Then I ran it against 
 
 ```sh
 ./pdf2epub -lang ara \
-  -chapter-pages "9:ابن النيل;29:سنوات الخدمة;65:حرب فلسطين" \
+  -chapter-pages "9:المقدمة;29:الفصل الثاني;65:الخاتمة" \
   -o mybook.epub input.pdf
 ```
 

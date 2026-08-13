@@ -32,9 +32,9 @@ The obvious first implementation was wrong. My first pass used the second text s
 The fix wasn't a tweak — it was recognizing that "better text" and "structurally correct text" were two different sources, and conflating them was the actual bug. **OCR owns structure** — paragraph breaks, chapter-opening bullets, everything about *how* the text is organized. **The reference text only gets a vote on individual words** — pure word-level correction, layered on top of OCR's own structure, never replacing it.
 
 ```sh
-./pdf2epub -lang ara -chapter-pages "9:ابن النيل" \
+./pdf2epub -lang ara -chapter-pages "9:المقدمة" \
   -text-reference better-ocr-output.txt \
-  -text-chapter-lines "68:ابن النيل" \
+  -text-chapter-lines "68:المقدمة" \
   -o mybook.epub input.pdf
 ```
 
