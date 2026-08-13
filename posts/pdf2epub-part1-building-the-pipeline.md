@@ -1,4 +1,11 @@
+---
+title: "pdf2epub, Part 1: Building the Pipeline (and Surviving Real Scans)"
+image: https://a7madm.github.io/blog/images/pdf2epub-part1-thumbnail.png
+---
+
 # 🏗️ pdf2epub, Part 1: Building a Self-Hosted PDF→Kindle Pipeline (and Surviving Real Scans)
+
+![pdf2epub, Part 1: Building the Pipeline](../images/pdf2epub-part1-thumbnail.png)
 
 *Part 1 of a 3-part series on building `pdf2epub`, a Go CLI that turns scanned, image-only PDFs into Kindle-ready reflowable EPUBs — and everything that went sideways along the way.*
 

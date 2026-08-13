@@ -1,4 +1,11 @@
+---
+title: "pdf2epub, Part 2: The Debugging Saga"
+image: https://a7madm.github.io/blog/images/pdf2epub-part2-thumbnail.png
+---
+
 # 🕵️ pdf2epub, Part 2: The Debugging Saga — Teaching OCR to Fix Itself
+
+![pdf2epub, Part 2: The Debugging Saga](../images/pdf2epub-part2-thumbnail.png)
 
 *Part 2 of the `pdf2epub` series. [Part 1](pdf2epub-part1-building-the-pipeline.md) covered getting a structurally correct EPUB out of the pipeline — right cover, right chapters, no noise pages. This post is the long middle of the project: three attempts at fixing individual wrong words, a word-alignment corrector's hardest bugs, an OCR engine comparison that went nowhere on its own terms, and the real bug it accidentally exposed.*
 

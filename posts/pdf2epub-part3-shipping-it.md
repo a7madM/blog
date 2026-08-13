@@ -1,4 +1,11 @@
+---
+title: "pdf2epub, Part 3: Lessons Learned and Going Public"
+image: https://a7madm.github.io/blog/images/pdf2epub-part3-thumbnail.png
+---
+
 # 🚀 pdf2epub, Part 3: Lessons Learned and Going Public
+
+![pdf2epub, Part 3: Lessons Learned and Going Public](../images/pdf2epub-part3-thumbnail.png)
 
 *Part 3, the closing post of the `pdf2epub` series. [Part 2](pdf2epub-part2-the-debugging-saga.md) covered fixing the watermark that had been silently corrupting output. This post covers the smaller problems that showed up around the edges, one near-miss almost repeated, the last stretch of formatting work, one more bug found by actually reading the output instead of trusting a clean build, and going public.*
 
