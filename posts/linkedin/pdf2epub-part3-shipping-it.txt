@@ -1,0 +1,55 @@
+pdf2epub, Part 3: Lessons Learned and Going Public
+
+Part 3, the closing post of the pdf2epub series. Part 2 covered fixing the watermark that had been silently corrupting output. This post covers the smaller problems that showed up around the edges, one near-miss almost repeated, the last stretch of formatting work, one more bug found by actually reading the output instead of trusting a clean build, and going public.
+
+DIGIT GHOSTS IN THREE UNICODE BLOCKS
+
+Old Arabic books commonly number pages with Eastern Arabic-Indic numerals instead of Western digits, a straightforward mapping to normalize, and worth doing for more than cosmetics: the reference-text alignment from Part 2 matches word-for-word, and a number written in Eastern Arabic-Indic digits and the same number written in Western digits are the same number to a human but two completely different tokens to a word-alignment algorithm.
+
+Except there's a second, visually near-identical block, Extended Arabic-Indic or Persian numerals, different codepoints, close to indistinguishable from the first at a glance. The first normalization pass only handled one block; a spot-check afterward showed some digits still hadn't converted, which is how the second got found. Later, reading real paragraph content while verifying an unrelated formatting fix turned up a third: stray digits from the Devanagari block, a completely different script, not even Arabic-adjacent, leftover page-number fragments OCR had misrecognized into the wrong script entirely and bled mid-sentence. Same detection technique, reused three separate times: search the whole file for the Unicode block rather than trying to spot individual bad characters by eye.
+
+THE REFERENCE FILE THAT KEPT MOVING
+
+The reference text wasn't a fixed input, it kept getting edited and re-exported throughout the project, and its line count changed at least four separate times over the course of the work. Every chapter boundary is a raw line number into that file, which means every edit silently invalidates every previously-found boundary. This produced at least one real bug: a line count that didn't match what the loader reported, off by exactly the delta introduced by an edit made after boundaries were last verified but before they were next used. The fix wasn't clever, just discipline, always re-check the line count against the current file before trusting old boundaries, every time, no exceptions for "I just checked this yesterday."
+
+ALMOST REPEATING AN OLD MISTAKE
+
+Even after the watermark fix, one more read-through was still disappointing enough to reopen the "maybe we need a different approach entirely" question a second time, this time, the instinct was to skip OCR correction as a concept altogether and use the reference text, by now cleaned up and clearly higher quality on its own, as the sole source of truth for the book's body text. That is almost exactly the full-replacement design Part 2 had already tried and rejected: the reference text still has no signal distinguishing this book's chapter-opening bullet lists from regular body prose, and nothing about its improved quality changes that, it's a content-quality improvement, not a structural one. Catching the repeat before implementing it, not after, was the entire value of having written that rejection down properly the first time.
+
+FORMATTING CHAPTERS: HEADLINES VS BODY TEXT
+
+The reference text had two structurally different things living in each chapter: a handful of short chapter-opening lines, title, subtitle, headline-style teaser bullets, followed by pages of flowing prose. Paragraph-joining treated both the same way, one undifferentiated block per chapter. Two fixes: paragraph joining now splits on blank lines in the curated text file, so a hand-edited source with blank lines between the title, subtitle, and each headline bullet produces one distinct paragraph per line instead of flattening everything into one string. And for the body, a mechanical script re-inserts breaks at real sentence boundaries, targeting 220 to 420 characters per paragraph, explicitly protecting any line that matches a chapter-marker pattern from being merged into surrounding prose.
+
+"SPLIT INTO 16 CHAPTERS" IS NOT VERIFICATION
+
+The CLI printed a log line saying it split the book into 16 chapters and exited cleanly. That's a log line, not a check. So: unzip the actual generated epub, read the real section files, sample paragraph lengths, read actual sentences, which is what caught both of the next two bugs. Neither would have been visible from stdout, a passing test suite, or a chapter count that merely looked plausible.
+
+THE CHAPTER THAT WASN'T A CHAPTER
+
+Counting the actual table of contents turned up 16 entries for a 14-chapter book. One entry wasn't a chapter title at all. The Arabic word for "chapter" is a genuine homograph, it also means "dismissal" or "separation," depending on context. Buried in a paragraph about labor-law reform was a sentence about permitting dismissal and prohibiting strikes, and the source text's line-wrapping happened to split that sentence so its second half landed on its own short line starting with the word for "chapter," exactly what the chapter-marker detector looks for: a short line, prefix-matching a marker word. The detector has no semantic understanding by design, and this was the one case in over 3,700 lines where the heuristic matched and the meaning didn't. Fix: rejoin the split sentence in the source; the marker count went from 15 down to 14, all real, and every line-number boundary derived from the file shifted by exactly the two lines that got merged away.
+
+While in there, the real chapters had their own smaller bug: the table of contents was showing the plain "Chapter One" style marker instead of each chapter's actual descriptive title, even though the EPUB generator already had that title available and just wasn't using it for the label. Both bugs came from the same fifteen minutes of actually reading the generated navigation file instead of trusting that a fixed-looking chapter count meant the table of contents was fine.
+
+THE THREAD RUNNING THROUGH ALL OF IT
+
+Looking back, one habit shows up again and again, in completely different contexts. Image preprocessing that looked like it should help, measurably didn't. Context-aware error detection that was theoretically sound, flagged correctly-spelled proper nouns in practice. Every alignment bug, each fix's side effect only visible against a real chapter, never a hand-crafted test case. A "better" OCR engine that traded one class of error for another, not eliminated errors. A similarity threshold that couldn't be tuned into working, because the signal it needed wasn't expressible as a pairwise score at all. Digit normalization that looked complete twice, and wasn't, three separate times. A rejected design almost taken up again for an unrelated reason, caught only because the first rejection had been written down specifically. A clean chapter count that hid a phantom chapter and a mislabeled table of contents.
+
+Measure before trusting. An idea that sounds obviously correct, denoise the image, score words against a language model, "this boundary hasn't changed," "a better engine will fix it," "it built and printed the right count," still needs to be checked against real output before you rely on it. None of the rejected approaches in this series were bad ideas; they were untested ones, and testing against the real book is what told the difference.
+
+GENERALIZING FOR OPEN SOURCE
+
+Before making the repository public, I audited the Go source for anything quietly overfit to this one book. Searched for the book's title, author, and filename anywhere in the source: zero hits. Chapter-marker defaults are generic per language, and this book's OCR-garbled marker variants were always supplied at runtime via a flag, never baked into the binary. The only book-specific thing that had ever ended up in the repo, in an entire project's worth of commits, was data: the actual extracted book text, about 934KB, copyrighted, not referenced by path from any code or test, and a stray macOS artifact file. Removed both from tracking, plus explicit ignore rules so neither comes back by accident.
+
+SQUASHING A DEVELOPMENT LOG INTO "V0.01"
+
+Twelve commits, and the message quality tells its own story, "V9", "v8", "V7, the best ever." Useful for me mid-project, not something worth handing a stranger reading the repo for the first time. No remote existed yet, so squashing was risk-free, no force-push, no shared history to break. The obvious approach, soft-resetting to the root commit, doesn't actually get you to one commit, the root commit is still sitting there as a parent. The trick that does: check out a new orphan branch, which starts with the current working tree but no parent history at all, commit once, then replace main with it. One commit, no ancestors, named for what it actually is, a first public snapshot, not a finished 1.0.
+
+IT'S PUBLIC
+
+github.com/a7madM/pdf2epub
+
+Go, local tools, no cloud OCR dependency, Arabic right-to-left support, and, after everything in this series, a pipeline that's actually been checked against a real 420-page scanned book instead of just a synthetic test fixture. If there's one thread tying this whole project together, it's that every real bug in it was eventually found the same way: by reading the actual output, not the summary of it.
+
+Thanks for reading through this series, if you're building something similar, OCR pipelines, EPUB generation, or just enjoy a good debugging story, I'd love to hear about it, or see what you do with the repo. Feel free to reach out or leave a comment.
+
+#golang #python #ocr #epub #arabic #unicode #git #opensource #softwareengineering #lessonslearned #selfhosted

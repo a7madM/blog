@@ -27,6 +27,7 @@ Welcome to my blog! Here you'll find my thoughts, experiences, and insights on v
 ## Recent Posts
 Here are some of my recent blog posts:
 
+- [pdf2epub: Building a Self-Hosted PDF→Kindle Pipeline](posts/pdf2epub-part1-building-the-pipeline.md) - An 8-part series on building a Go CLI that turns scanned Arabic PDFs into Kindle EPUBs, and everything that went sideways along the way. Now [open source](https://github.com/a7madM/pdf2epub).
 - [Large Language Models Inference Optimization](posts/llm-inference.md) - LLM API inference for semantic similarity, a real world use case in Whatisgoing.com
 
 ## Contact

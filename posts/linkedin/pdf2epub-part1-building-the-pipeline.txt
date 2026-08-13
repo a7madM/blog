@@ -1,0 +1,33 @@
+pdf2epub, Part 1: Building a Self-Hosted PDF to Kindle Pipeline (and Surviving Real Scans)
+
+Part 1 of a 3-part series on building pdf2epub, a Go CLI that turns scanned, image-only PDFs into Kindle-ready reflowable EPUBs, and everything that went sideways along the way.
+
+I had a real problem to solve: a scanned copy of a 420-page memoir, image-only PDF, no text layer at all. I wanted to read it on a Kindle, reflowable, in Arabic, with proper chapters. Nothing off-the-shelf did that well without uploading a personal scan to some cloud OCR service, which didn't sit right with me. So: pdf2epub. Go, local tools, homelab mindset, Tesseract instead of a cloud OCR API, everything running on my own machine.
+
+THE GOAL AND THE ARCHITECTURE
+
+A CLI that takes a scanned PDF and produces a Kindle-friendly EPUB, no cloud dependency, no per-page API cost, works offline once the tools are installed. The pipeline is a straight line, four stages: rasterize each page into an image at a configurable DPI, OCR it with Tesseract, clean up the raw text (strip repeated running headers and footers, dehyphenate words split across a line wrap, join wrapped lines back into paragraphs), then assemble the cleaned chapters into a valid EPUB with right-to-left support for Arabic.
+
+Tesseract and the PDF rasterizer both have Go bindings via cgo. I shelled out to the command-line tools instead, since cgo bindings mean the binary has to be built against the exact library version installed on the machine, exactly the packaging friction I wanted to avoid for a homelab tool that should just run wherever the underlying tools are installed via the system package manager.
+
+Before ever touching the real 420-page book, the tool was scaffolded and tested against small synthetic PDFs, no OCR surprises, just proving the pipeline correct in isolation. That mattered more than it sounds: once real scanned data enters the picture, it's much easier to debug a broken pipeline stage on a 3-page synthetic file than to figure out whether a bug is in the pipeline or in the data, 200 pages into a real book.
+
+Once tested against the real book, single-threaded processing was too slow to iterate on, 420 pages through Tesseract one at a time turns every test run into a coffee break. The fix was a bounded worker pool with a configurable concurrency flag and a small progress helper reporting live status across workers. That turned a full-book run from "leave it overnight" into something you can actually iterate on during a work session.
+
+THEN THE REAL BOOK SHOWED UP
+
+The pipeline worked cleanly on small synthetic test PDFs. Then I ran it against the real thing, and real scans expose problems synthetic test files never will.
+
+No cover: the naive assumption that page one is the cover was wrong, page one was blank front matter. Needed an explicit flag to point at the actual cover page, and this only became obvious by actually opening the generated EPUB and looking at it. No amount of code review catches "the cover is a blank page," only inspection of the real output.
+
+Chapters OCR couldn't see: this book's chapter headings used a decorative font, visually obvious to a human, but Tesseract sometimes failed to recognize that text at all, even while reading the surrounding body text on the same page perfectly. A marker-word chapter detector simply never sees the marker if OCR never produced the word in the first place. The tool ended up supporting two detection strategies: automatic, which works when headings share the body font, and manual, for everything else, transcribing each chapter's physical PDF page number and title by eye, usually easiest from the book's own printed table of contents, which OCRs fine even when the decorative headings don't. All 14 of this book's chapters were found this way at first.
+
+Noise pages: some pages were blank, or photo plates with no real text, but a blank page's paper grain and dust don't OCR to nothing, they OCR to a scatter of stray digit and symbol garbage plausible enough to survive naive filtering. The fix was a page-level density check: after cleanup, if the fraction of non-space characters that are actual letters falls below a threshold, the whole page gets dropped.
+
+The fix that didn't work: the obvious next lever for OCR quality was image preprocessing, deskew, denoise, binarize before handing pages to Tesseract. Standard advice, easy to assume it must help. It didn't. Tested against this book's actual pages, "cleaned up" images produced a measurably higher error rate than the raw rasterized ones. My best guess is that binarization discarded faint ink detail on aged paper that Tesseract's own internal processing handled better than a naive threshold did. The guess mattered less than the discipline that caught it: measure before trusting. An enhancement that looks obviously correct on paper still needs to be checked against real output before it ships, because "should help" and "does help" are different claims. This one got reverted, and the same discipline turned out to be the thread running through nearly every hard problem later in this project.
+
+With cover, chapters, and noise pages handled, the pipeline produced a real, structurally correct EPUB. But structurally correct isn't the same as textually correct, individual words were still coming out of OCR wrong, sometimes badly enough to be unreadable. That's where things got interesting.
+
+Next: Part 2, The Debugging Saga, Teaching OCR to Fix Itself.
+
+#golang #ocr #tesseract #epub #kindle #selfhosted #homelab #cli #arabic
