@@ -1,0 +1,34 @@
+Building pdf2epub: a local, offline pipeline for turning scanned PDFs into Kindle EPUBs
+
+I had a real problem to solve: a scanned copy of an old book — 420 pages, image-only PDF, no text layer at all. I wanted to read it on a Kindle, reflowable, with proper chapters. Nothing off-the-shelf did that well without uploading a personal scan to some cloud OCR service, which didn't sit right with me.
+
+So I built pdf2epub: a Go CLI, local tools only, homelab mindset — Tesseract instead of a cloud OCR API, everything running on my own machine. No cloud dependency, no per-page API cost, works fully offline.
+
+The pipeline is a straight line: rasterize the PDF into page images, OCR each page, clean up the raw text (strip headers/footers, fix line wraps, rebuild paragraphs), then assemble everything into a valid EPUB.
+
+./pdf2epub -title "Book Title" -author "Author Name" -o mybook.epub input.pdf
+
+It worked cleanly on small synthetic test files. Then I ran it against the real 420-page book, and real scans broke things synthetic tests never would: a blank first page that wasn't actually the cover, chapter headings in a font OCR sometimes couldn't read at all, blank pages that OCR'd into plausible-looking garbage instead of nothing. Each one needed a real fix, and each one was only found by actually opening the generated EPUB and reading it — not by trusting a clean exit code. Chapter headings OCR couldn't read at all still needed to end up in the table of contents, so when automatic detection failed, a manual page mapping filled the gap:
+
+./pdf2epub -chapter-pages "9:Introduction;29:Chapter Two;65:Conclusion" -o mybook.epub input.pdf
+
+The harder problem was individual wrong words. I tried three approaches, in decreasing order of cleverness: silent auto-correction (rejected before I built it — a confidently wrong word is worse than an obviously broken one, since it doesn't look broken); a language-model-based outlier detector (rejected after testing — it flagged real errors, but also flagged correctly-spelled proper nouns just as confidently, which taught me not to trust it); and a plain dictionary spell-checker that only flags likely errors for manual review and never touches the text. The least clever option shipped, because a review tool and a correction tool have completely different bars for acceptable error rate.
+
+The real unlock was getting a second, independently-produced OCR extraction of the same book and using it to correct individual words — but only words, never structure. My first attempt used it as a full replacement for the OCR'd text and it quietly corrupted formatting the original OCR had gotten right. The fix was treating the two sources as having different jobs: OCR owns structure, the second source only gets a vote on individual words. Getting the word-level alignment right took eight real bugs, each one found only by testing against actual chapters, never a synthetic example.
+
+Along the way, comparing OCR engines side by side surfaced something stranger: a big, previously invisible watermark baked into a huge fraction of the pages by whatever tool had produced the scan, misread by the primary OCR engine as noisy garbled text instead of being recognized as junk. Detecting it reliably took two tries — a naive fuzzy-match approach failed because unrelated real sentences were sometimes MORE similar to each other than the watermark's own variants were to one another. The fix that actually worked separated two different questions: is a line repeated often enough to be suspicious at all, and only then, do two suspicious lines look like the same thing.
+
+const (
+    minRepeatsForMerge       = 3
+    mergeSimilarityThreshold = 0.4
+)
+
+Gate on repetition first, merge on similarity second — never the other way around. That brought false positives to zero.
+
+The thread running through the whole project: nearly every real bug was invisible until I stopped trusting a clean log line or a plausible chapter count and actually read the generated output. Preprocessing that looked like it should help, didn't. Clever detection that looked sound on paper, wasn't. Every fix that mattered was found by inspection, not by assumption.
+
+Before open-sourcing it, I audited the code for anything overfit to that one book, and squashed a messy development history into a single clean first commit. It's fully open source now — Go, fully local, no cloud OCR dependency.
+
+https://github.com/a7madM/pdf2epub
+
+#golang #ocr #epub #opensource #softwareengineering #selfhosted
