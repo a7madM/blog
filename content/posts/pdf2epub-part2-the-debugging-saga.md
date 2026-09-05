@@ -1,13 +1,14 @@
 ---
 title: "pdf2epub, Part 2: The Debugging Saga"
-image: https://a7madm.github.io/blog/images/pdf2epub-part2-thumbnail.png
+date: 2026-08-13
+tags: ["go", "ocr", "pdf2epub", "kindle"]
+cover:
+  image: "images/pdf2epub-part2-thumbnail.png"
+  alt: "pdf2epub, Part 2: The Debugging Saga"
+  relative: false
 ---
 
-# 🕵️ pdf2epub, Part 2: The Debugging Saga — Teaching OCR to Fix Itself
-
-![pdf2epub, Part 2: The Debugging Saga](../images/pdf2epub-part2-thumbnail.png)
-
-*Part 2 of the `pdf2epub` series. [Part 1](pdf2epub-part1-building-the-pipeline.md) covered getting a structurally correct EPUB out of the pipeline — right cover, right chapters, no noise pages. This post is the long middle of the project: three attempts at fixing individual wrong words, a word-alignment corrector's hardest bugs, an OCR engine comparison that went nowhere on its own terms, and the real bug it accidentally exposed.*
+*Part 2 of the `pdf2epub` series. [Part 1](/posts/pdf2epub-part1-building-the-pipeline/) covered getting a structurally correct EPUB out of the pipeline — right cover, right chapters, no noise pages. This post is the long middle of the project: three attempts at fixing individual wrong words, a word-alignment corrector's hardest bugs, an OCR engine comparison that went nowhere on its own terms, and the real bug it accidentally exposed.*
 
 Structurally, the EPUB was correct. But reading through it, individual words were wrong in ways that hurt comprehension — `اقرب` where it should have been `اقترب`, `الساء` where it should have been `السماء`. Both are real words in isolation, which is exactly what makes this hard: a naive "is this a valid word" check doesn't catch the first at all, and even flagging the second doesn't tell you what it should be.
 
@@ -109,7 +110,7 @@ Two regression tests now guard both halves of this fix directly, so the whole th
 
 With the watermark actually gone rather than just less frequent, the pipeline had genuinely improved for the first time since the alignment corrector shipped. It also nearly triggered a full pivot away from the reference-text architecture entirely, for reasons that belong with the rest of what shipping this thing actually took.
 
-**Next: [Part 3 — Lessons Learned and Going Public](pdf2epub-part3-shipping-it.md)**
+**Next: [Part 3 — Lessons Learned and Going Public](/posts/pdf2epub-part3-shipping-it/)**
 
 ---
 

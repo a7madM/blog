@@ -1,0 +1,77 @@
+baseURL = "https://magdi.work/"
+locale = "en-us"
+title = "Ahmed Magdy"
+theme = "PaperMod"
+paginate = 10
+enableRobotsTXT = true
+buildDrafts = false
+buildFuture = false
+buildExpired = false
+
+[minify]
+  disableXML = true
+
+[params]
+  env = "production"
+  title = "Ahmed Magdy"
+  description = "Notes on backend engineering, Go, infra, and things I build."
+  keywords = ["blog", "go", "backend engineering", "infrastructure"]
+  author = "Ahmed Magdy"
+  defaultTheme = "auto"
+  ShowReadingTime = true
+  ShowShareButtons = false
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowWordCount = false
+  ShowRssButtonInSectionTermList = true
+  UseHugoToc = true
+  disableSpecial1stPost = false
+  comments = false
+
+  [params.homeInfoParams]
+    Title = "Hi, I'm Ahmed 👋"
+    Content = "Backend engineer working in Go and Ruby — scalable systems, infra, and the occasional deep dive into OCR pipelines and LLM inference. This is where I write it all up."
+
+  [params.assets]
+    disableHLJS = true
+    favicon = "favicon.ico"
+
+  [[params.socialIcons]]
+    name = "github"
+    url = "https://github.com/a7madM"
+
+  [[params.socialIcons]]
+    name = "linkedin"
+    url = "https://www.linkedin.com/in/ahmed-mgdi/"
+
+  [[params.socialIcons]]
+    name = "x"
+    url = "https://x.com/ahmad_magdy94"
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[[menu.main]]
+  identifier = "posts"
+  name = "Posts"
+  url = "/posts/"
+  weight = 10
+
+[[menu.main]]
+  identifier = "about"
+  name = "About"
+  url = "/about/"
+  weight = 20
+
+[[menu.main]]
+  identifier = "search"
+  name = "Search"
+  url = "/search/"
+  weight = 30
+
+[markup]
+  [markup.highlight]
+    noClasses = false
+  [markup.goldmark.renderer]
+    unsafe = true

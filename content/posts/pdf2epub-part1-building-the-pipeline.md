@@ -1,11 +1,12 @@
 ---
 title: "pdf2epub, Part 1: Building the Pipeline (and Surviving Real Scans)"
-image: https://a7madm.github.io/blog/images/pdf2epub-part1-thumbnail.png
+date: 2026-08-13
+tags: ["go", "ocr", "pdf2epub", "kindle"]
+cover:
+  image: "images/pdf2epub-part1-thumbnail.png"
+  alt: "pdf2epub, Part 1: Building the Pipeline"
+  relative: false
 ---
-
-# 🏗️ pdf2epub, Part 1: Building a Self-Hosted PDF→Kindle Pipeline (and Surviving Real Scans)
-
-![pdf2epub, Part 1: Building the Pipeline](../images/pdf2epub-part1-thumbnail.png)
 
 *Part 1 of a 3-part series on building `pdf2epub`, a Go CLI that turns scanned, image-only PDFs into Kindle-ready reflowable EPUBs — and everything that went sideways along the way.*
 
@@ -71,7 +72,7 @@ All 14 of this book's chapters were found this way at first — page by page, by
 
 With cover, chapters, and noise pages handled, the pipeline produced a real, structurally correct EPUB. But structurally correct isn't the same as *textually* correct — individual words were still coming out of OCR wrong, sometimes badly enough to be unreadable. That's where things got interesting.
 
-**Next: [Part 2 — The Debugging Saga: Teaching OCR to Fix Itself](pdf2epub-part2-the-debugging-saga.md)**
+**Next: [Part 2 — The Debugging Saga: Teaching OCR to Fix Itself](/posts/pdf2epub-part2-the-debugging-saga/)**
 
 ---
 

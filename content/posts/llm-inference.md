@@ -1,5 +1,12 @@
-# 🧩 Building a Local LLM Inference API for Semantic Similarity
-![LLM Inference Architecture](/images/llm-inference.png)
+---
+title: "Building a Local LLM Inference API for Semantic Similarity"
+date: 2025-10-05
+tags: ["llm", "nlp", "go", "inference"]
+cover:
+  image: "images/llm-inference.png"
+  alt: "LLM Inference Architecture"
+  relative: false
+---
 
 At **[whatisgoing.com](https://whatisgoing.com)**, we needed a reliable way to **extract named entities** from multilingual news articles — especially Arabic news — where the same entity can appear in different linguistic forms.
 

@@ -1,37 +1,33 @@
-# Ahmed Magdy - Technical Blog
+# magdi.work
 
-Welcome to my blog! Here you'll find my thoughts, experiences, and insights on various topics.
+Source for my personal site and blog, built with [Hugo](https://gohugo.io) (theme: [PaperMod](https://github.com/adityatelange/hugo-PaperMod)), hosted on [Netlify](https://www.netlify.com), and edited through [Decap CMS](https://decapcms.org) at `/admin`.
 
-## Contents
+## Local development
 
-- [About Me](#about-me)
-- [Recent Posts](#recent-posts)
-- [Contact](#contact)
+```sh
+hugo server -D
+```
 
-## About Me
-    I'm a passionate software engineer with over 8 years of experience in Backend Engineering. My expertise lies in building scalable systems and creating thoughtful user experiences.
+Open http://localhost:1313. The `-D` flag also renders draft posts.
 
-    ### 🚀 Current Projects
-    - Building **What Is Going?** - A trend-tracking web app using Ruby, Golang, and Next.js
-    - Implementing microservices architecture with K3s and Argo CD
-    - Developing high-performance backend services in Go
+## Writing a post
 
-    ### 🛠️ Technical Skills
-    - **Languages:** Go, Ruby
-    - **Frameworks:** Ruby on Rails, Next.js
-    - **DevOps:** Docker, Kubernetes, Helm, Argo CD, GitHub Actions
-    - **Infrastructure:** Elasticsearch, RabbitMQ, Prometheus, Grafana
+Either:
 
-    I'm constantly learning and exploring new technologies to solve complex engineering challenges.
+- Add a markdown file under `content/posts/` with front matter (`title`, `date`, `draft`, `tags`), or
+- Go to `/admin` on the live site, log in, and write there — it commits straight to this repo.
 
-## Recent Posts
-Here are some of my recent blog posts:
+Posts with `draft: true` are never built into the production site.
 
-- [pdf2epub: Building a Self-Hosted PDF→Kindle Pipeline](posts/pdf2epub-part1-building-the-pipeline.md) - An 8-part series on building a Go CLI that turns scanned Arabic PDFs into Kindle EPUBs, and everything that went sideways along the way. Now [open source](https://github.com/a7madM/pdf2epub).
-- [Large Language Models Inference Optimization](posts/llm-inference.md) - LLM API inference for semantic similarity, a real world use case in Whatisgoing.com
+## Structure
 
-## Contact
-Feel free to reach out to me:
-- Twitter: [ahmad_magdy94](https://x.com/ahmad_magdy94)
-- GitHub: [a7madM](https://github.com/a7madM)
-- LinkedIn: [ahmed-mgdi](https://www.linkedin.com/in/ahmed-mgdi/)
+- `content/posts/` — blog posts
+- `content/about.md` — the about page
+- `static/images/` — post cover images and other static assets
+- `static/admin/` — Decap CMS config and admin panel
+- `themes/PaperMod/` — theme, added as a git submodule
+- `netlify.toml` — build config for Netlify
+
+## Deployment
+
+Netlify builds and deploys on every push to `main`. The custom domain and CMS login (Netlify Identity + Git Gateway) are configured in the Netlify dashboard, not in this repo.

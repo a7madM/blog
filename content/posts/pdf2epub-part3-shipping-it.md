@@ -1,19 +1,20 @@
 ---
 title: "pdf2epub, Part 3: Lessons Learned and Going Public"
-image: https://a7madm.github.io/blog/images/pdf2epub-part3-thumbnail.png
+date: 2026-08-13
+tags: ["go", "ocr", "pdf2epub", "kindle"]
+cover:
+  image: "images/pdf2epub-part3-thumbnail.png"
+  alt: "pdf2epub, Part 3: Lessons Learned and Going Public"
+  relative: false
 ---
 
-# 🚀 pdf2epub, Part 3: Lessons Learned and Going Public
-
-![pdf2epub, Part 3: Lessons Learned and Going Public](../images/pdf2epub-part3-thumbnail.png)
-
-*Part 3, the closing post of the `pdf2epub` series. [Part 2](pdf2epub-part2-the-debugging-saga.md) covered fixing the watermark that had been silently corrupting output. This post covers the smaller problems that showed up around the edges, one near-miss almost repeated, the last stretch of formatting work, one more bug found by actually reading the output instead of trusting a clean build, and going public.*
+*Part 3, the closing post of the `pdf2epub` series. [Part 2](/posts/pdf2epub-part2-the-debugging-saga/) covered fixing the watermark that had been silently corrupting output. This post covers the smaller problems that showed up around the edges, one near-miss almost repeated, the last stretch of formatting work, one more bug found by actually reading the output instead of trusting a clean build, and going public.*
 
 ---
 
 ## 🔢 Digit Ghosts in Three Unicode Blocks
 
-Old Arabic books commonly number pages with Eastern Arabic-Indic numerals (`٠١٢٣٤٥٦٧٨٩`, U+0660–0669) instead of Western digits — a straightforward mapping to normalize, and worth doing for more than cosmetics: the reference-text alignment from [Part 2](pdf2epub-part2-the-debugging-saga.md) matches word-for-word, and `١٩٤٩` and `1949` are the same number to a human but two completely different tokens to a word-alignment algorithm.
+Old Arabic books commonly number pages with Eastern Arabic-Indic numerals (`٠١٢٣٤٥٦٧٨٩`, U+0660–0669) instead of Western digits — a straightforward mapping to normalize, and worth doing for more than cosmetics: the reference-text alignment from [Part 2](/posts/pdf2epub-part2-the-debugging-saga/) matches word-for-word, and `١٩٤٩` and `1949` are the same number to a human but two completely different tokens to a word-alignment algorithm.
 
 Except there's a second, visually near-identical block — Extended Arabic-Indic / Persian numerals (`۰۱۲۳۴۵۶۷۸۹`, U+06F0–06F9) — different codepoints, close to indistinguishable from the first at a glance. The first normalization pass only handled one block; a spot-check afterward showed some digits still hadn't converted, which is how the second got found. Later, reading real paragraph content while verifying an unrelated formatting fix turned up a *third*: stray digits from the Devanagari block (U+0900–U+097F) — a completely different script, not even Arabic-adjacent — leftover page-number fragments OCR had misrecognized into the wrong script entirely and bled mid-sentence:
 
@@ -29,7 +30,7 @@ The reference text wasn't a fixed input — it kept getting edited and re-export
 
 ## 🔁 Almost Repeating an Old Mistake
 
-Even after the watermark fix, one more read-through was still disappointing enough to reopen the "maybe we need a different approach entirely" question a second time — this time, the instinct was to skip OCR correction as a concept altogether and use the reference text, by now cleaned up and clearly higher quality on its own, as the *sole* source of truth for the book's body text. That is almost exactly the full-replacement design [Part 2](pdf2epub-part2-the-debugging-saga.md) had already tried and rejected: the reference text still has no signal distinguishing this book's chapter-opening bullet lists from regular body prose, and nothing about its improved quality changes that — it's a content-quality improvement, not a structural one. Catching the repeat before implementing it, not after, was the entire value of having written that rejection down properly the first time instead of carrying it as a vague memory of "we tried something like this and it didn't work."
+Even after the watermark fix, one more read-through was still disappointing enough to reopen the "maybe we need a different approach entirely" question a second time — this time, the instinct was to skip OCR correction as a concept altogether and use the reference text, by now cleaned up and clearly higher quality on its own, as the *sole* source of truth for the book's body text. That is almost exactly the full-replacement design [Part 2](/posts/pdf2epub-part2-the-debugging-saga/) had already tried and rejected: the reference text still has no signal distinguishing this book's chapter-opening bullet lists from regular body prose, and nothing about its improved quality changes that — it's a content-quality improvement, not a structural one. Catching the repeat before implementing it, not after, was the entire value of having written that rejection down properly the first time instead of carrying it as a vague memory of "we tried something like this and it didn't work."
 
 ## ✂️ Formatting Chapters: Headlines vs. Body Text
 
