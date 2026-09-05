@@ -1,0 +1,15 @@
+/* Keep the site footer pinned to the bottom of the viewport instead of
+   scrolling away with the page content. */
+
+body {
+    padding-bottom: var(--footer-height);
+}
+
+.footer {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: 20;
+    background: var(--theme);
+    border-top: 1px solid var(--border);
+}

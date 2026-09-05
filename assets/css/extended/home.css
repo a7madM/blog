@@ -1,0 +1,89 @@
+/* Home page: wider canvas + a proper grid instead of one narrow stacked column. */
+
+body.home {
+    --main-width: 1160px;
+}
+
+/* Hero (the homeInfoParams intro block) becomes a full-width banner instead of
+   a centered narrow box, so it doesn't look like just another post card. */
+body.home .home-info {
+    min-height: unset;
+    justify-content: flex-start;
+    max-width: 720px;
+    padding: 32px 0 24px;
+    margin: 0;
+    border-bottom: 1px solid var(--border);
+}
+
+body.home .home-info .entry-header h1 {
+    font-size: 46px;
+    line-height: 1.2;
+}
+
+body.home .home-info .entry-content {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+body.home .home-info .entry-footer {
+    margin-top: 8px;
+}
+
+.home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: var(--content-gap);
+}
+
+.home-grid .post-entry {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+}
+
+.home-grid .entry-cover {
+    margin-bottom: var(--content-gap);
+}
+
+.home-grid .entry-cover img {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+
+.home-grid .entry-header h2 {
+    font-size: 20px;
+}
+
+.home-grid .entry-content {
+    flex-grow: 1;
+}
+
+.home-grid .post-entry:hover,
+.home-grid .post-entry:focus-within {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .home-grid .post-entry:hover,
+[data-theme="dark"] .home-grid .post-entry:focus-within {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+@media screen and (max-width: 768px) {
+    body.home .home-info {
+        padding: 36px 0 28px;
+    }
+
+    body.home .home-info .entry-header h1 {
+        font-size: 32px;
+    }
+
+    body.home .home-info .entry-content {
+        font-size: 16px;
+    }
+
+    .home-grid {
+        grid-template-columns: 1fr;
+        gap: var(--gap);
+    }
+}
