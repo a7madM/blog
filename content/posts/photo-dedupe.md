@@ -3,6 +3,10 @@ title: "Building photo-dedupe: a local-first burst-photo cleaner in Go"
 date: 2026-08-30
 draft: false
 tags: ["go", "cli", "photography", "performance"]
+cover:
+  image: "images/photo-dedupe-thumbnail.png"
+  alt: "photo-dedupe: cluster by time, group by likeness, keep the sharpest"
+  relative: false
 ---
 
 Burst mode leaves you with seven nearly-identical frames and no easy way to pick "the good one." `photo-dedupe` is a small offline Go CLI (plus an optional local web UI) that does that triage: cluster by capture time, group the shots that actually look alike, keep the sharpest and highest-resolution frame. Nothing is ever deleted — losers move to a quarantine folder for you to review. What's worth writing up isn't the algorithms, which are well-known, but how cleanly the problem splits into independent, testable stages, and how much of the design is really about safety: a readable JSON plan, a move instead of a delete, a one-command restore.
