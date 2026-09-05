@@ -1,5 +1,5 @@
 /* Keep the site footer pinned to the bottom of the viewport instead of
-   scrolling away with the page content. */
+   scrolling away with the page content, spanning the full page width. */
 
 body {
     padding-bottom: var(--footer-height);
@@ -10,6 +10,19 @@ body {
     inset-inline: 0;
     inset-block-end: 0;
     z-index: 20;
+    max-width: none;
+    margin: 0;
     background: var(--theme);
     border-top: 1px solid var(--border);
+}
+
+/* list-type pages (home, archives, tags/terms) render their body on
+   --code-bg in light mode, not --theme — match whichever the page is
+   actually using so the footer bar doesn't look like a mismatched box. */
+body.list .footer {
+    background: var(--code-bg);
+}
+
+[data-theme="dark"] body.list .footer {
+    background: var(--theme);
 }
